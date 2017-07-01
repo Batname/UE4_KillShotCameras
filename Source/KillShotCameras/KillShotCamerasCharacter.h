@@ -138,5 +138,21 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+//------------------- Kill shot cameras code
+// ----------------------------------------
+protected:
+	/** The time dilation multiplayer */
+	UPROPERTY(EditAnywhere)
+	float TimeDilationMultiplier = 0.05f;
+
+	UPROPERTY(VisibleAnywhere)
+	class USpringArmComponent* ThirdPersonSpringArmComp;
+
+
+	UPROPERTY(VisibleAnywhere)
+	class UCameraComponent* ThirdPersonCameraComp;
+
+
+
 };
 

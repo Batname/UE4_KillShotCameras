@@ -4,6 +4,7 @@
 #include "KillShotCamerasProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
@@ -42,7 +43,7 @@ AKillShotCamerasCharacter::AKillShotCamerasCharacter()
 
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	FP_Gun->SetOnlyOwnerSee(false);			// only the owning player will see this mesh
 	FP_Gun->bCastDynamicShadow = false;
 	FP_Gun->CastShadow = false;
 	// FP_Gun->SetupAttachment(Mesh1P, TEXT("GripPoint"));
@@ -68,7 +69,7 @@ AKillShotCamerasCharacter::AKillShotCamerasCharacter()
 	// Create a gun and attach it to the right-hand VR controller.
 	// Create a gun mesh component
 	VR_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("VR_Gun"));
-	VR_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	VR_Gun->SetOnlyOwnerSee(false);			// only the owning player will see this mesh
 	VR_Gun->bCastDynamicShadow = false;
 	VR_Gun->CastShadow = false;
 	VR_Gun->SetupAttachment(R_MotionController);
@@ -81,6 +82,22 @@ AKillShotCamerasCharacter::AKillShotCamerasCharacter()
 
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
+
+	/** KillShotCode begin */
+
+	// Create the spring arm comp
+	ThirdPersonSpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("ThirdPersonSpringArmComp"));
+
+	// Attach it to the Character root component
+	ThirdPersonSpringArmComp->SetupAttachment(RootComponent);
+
+	// Create the tird persaon camera
+	ThirdPersonCameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCameraComp"));
+
+	// Attach it to Spring Arm
+	ThirdPersonCameraComp->SetupAttachment(ThirdPersonSpringArmComp);
+
+	/** KillShotCode end */
 }
 
 void AKillShotCamerasCharacter::BeginPlay()
@@ -148,6 +165,13 @@ void AKillShotCamerasCharacter::OnFire()
 				const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
 				const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
 				World->SpawnActor<AKillShotCamerasProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+			
+				/** KillShotCode begin */
+				// Dilate the time
+				UGameplayStatics::SetGlobalTimeDilation(World, TimeDilationMultiplier);
+
+				/** KillShotCode end */
+
 			}
 			else
 			{
