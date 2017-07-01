@@ -6826,6 +6826,7 @@ SOURCES += \
 	"$$unrealRootPath/Engine/Plugins/Tests/RuntimeTests/Source/RuntimeTests/Private/RuntimeTests.cpp" \
 	"$$unrealRootPath/Engine/Plugins/Tests/RuntimeTests/Source/RuntimeTests/Private/Slate/RichTextMarkupProcessingTest.cpp" \
 	"$$unrealRootPath/Engine/Plugins/Tests/ScreenshotTools/Source/ScreenshotTools/Private/ScreenshotTools.cpp" \
+	"$$KillShotCamerasRootPath/Source/KillShotCameras/DummyEnemyCharacter.cpp" \
 	"$$KillShotCamerasRootPath/Source/KillShotCameras/KillShotCameras.cpp" \
 	"$$KillShotCamerasRootPath/Source/KillShotCameras/KillShotCamerasCharacter.cpp" \
 	"$$KillShotCamerasRootPath/Source/KillShotCameras/KillShotCamerasGameMode.cpp" \

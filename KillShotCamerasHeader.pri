@@ -8839,6 +8839,7 @@ HEADERS += \
 	"$$unrealRootPath/Engine/Plugins/Tests/FunctionalTestingEditor/Source/Public/EditorAutomationModule.h" \
 	"$$unrealRootPath/Engine/Plugins/Tests/RuntimeTests/Source/RuntimeTests/Public/RuntimeTests.h" \
 	"$$unrealRootPath/Engine/Plugins/Tests/ScreenshotTools/Source/ScreenshotTools/Public/ScreenshotTools.h" \
+	"$$KillShotCamerasRootPath/Source/KillShotCameras/DummyEnemyCharacter.h" \
 	"$$KillShotCamerasRootPath/Source/KillShotCameras/KillShotCameras.h" \
 	"$$KillShotCamerasRootPath/Source/KillShotCameras/KillShotCamerasCharacter.h" \
 	"$$KillShotCamerasRootPath/Source/KillShotCameras/KillShotCamerasGameMode.h" \
