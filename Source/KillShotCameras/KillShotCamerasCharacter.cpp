@@ -375,15 +375,15 @@ AActor* AKillShotCamerasCharacter::GetHitActor(AKillShotCamerasProjectile* Proje
 
 	FVector StartLocation = Projectile->GetActorLocation();
 
-	FVector EndLocation = StartLocation + (Projectile->GetActorForwardVector() * RayCastLength);
+	FVector EndLocation = StartLocation + (Projectile->GetActorForwardVector() * RaycastLength);
 
 	FCollisionQueryParams CollisionParams;
 
-	// Ignore the character and the projecxtile
+	//Ignore the character and the projectile
 	CollisionParams.AddIgnoredActor(this);
 	CollisionParams.AddIgnoredActor(Projectile);
 
-	// Perform raycast - search pawns only
+	//Perform a raycast - search for pawns only
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECollisionChannel::ECC_Pawn, CollisionParams);
 
 	return HitResult.GetActor();

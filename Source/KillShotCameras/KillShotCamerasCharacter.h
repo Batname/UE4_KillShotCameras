@@ -183,7 +183,7 @@ protected:
 
 	/** The raycast lingth */
 	UPROPERTY(EditAnywhere)
-	float RayCastLength = 2000.f;
+	float RaycastLength = 2000.f;
 
 public:
 	/** Enable to FirstPersonCamera again */
