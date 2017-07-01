@@ -181,16 +181,25 @@ void AKillShotCamerasCharacter::OnFire()
 				FActorSpawnParameters ActorSpawnParams;
 				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-				// spawn the projectile at the muzzle
-				World->SpawnActor<AKillShotCamerasProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			
-
 				/** KillShotCode begin */
+
+				// spawn the projectile at the muzzle
+				AKillShotCamerasProjectile* SpawnedProjectile = World->SpawnActor<AKillShotCamerasProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 				// Dilate the time
 				UGameplayStatics::SetGlobalTimeDilation(World, TimeDilationMultiplier);
 
 				// Change the activate camera
 				ActivateThirdPersonCamera();
+
+				// Create a timer handle and a timer delagate
+				FTimerHandle TimerHandle;
+				FTimerDelegate TimerDel;
+
+				// Assign the correspondent UFUNCTION to the timer delegate
+				TimerDel.BindUFunction(this, TEXT("ActivateProjectileCamera"), SpawnedProjectile);
+
+				// Fire the delegate after the specific delay
+				World->GetTimerManager().SetTimer(TimerHandle, TimerDel, ThirdPersonToProjectileTransitionDelay, false);
 
 				/** KillShotCode end */
 			}
