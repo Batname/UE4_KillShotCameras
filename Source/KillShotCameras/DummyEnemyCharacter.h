@@ -41,4 +41,12 @@ public:
 	/** Transmission the active amera to the corresponding death camera */
 	void EnableCameraTransition();
 	
+protected:
+	/** Delay to camera will be reset right after the death of the enemy */
+	UPROPERTY(EditAnywhere)
+	float CameraResetDelay = 1.f;
+
+public:
+	/** Kills the character and Activates the FirstPerson camera */
+	void Die();
 };

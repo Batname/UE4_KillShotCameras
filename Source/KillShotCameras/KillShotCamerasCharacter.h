@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "KillShotCamerasProjectile.h"
+#include "DummyEnemyCharacter.h"
 #include "KillShotCamerasCharacter.generated.h"
 
 class UInputComponent;
@@ -171,5 +172,21 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float ThirdPersonToProjectileTransitionDelay = 0.005f;
 
+private:
+	/** Returns true if the projectile hits enemy - false otherwise */
+	bool HitsAnEnemy(AKillShotCamerasProjectile* Projectile, ADummyEnemyCharacter*& HitEnemy); // TODO check if that correct
+
+	/** Perform a raycast and returns the hit actor - if any */
+	AActor* GetHitActor(AKillShotCamerasProjectile* Projectile);
+
+protected:
+
+	/** The raycast lingth */
+	UPROPERTY(EditAnywhere)
+	float RayCastLength = 2000.f;
+
+public:
+	/** Enable to FirstPersonCamera again */
+	void ResetActiveCamera();
 };
 

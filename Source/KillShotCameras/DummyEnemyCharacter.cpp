@@ -2,9 +2,12 @@
 
 
 #include "DummyEnemyCharacter.h"
+#include "KillShotCamerasCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/SkeletalMeshComponent.h"
+
 
 
 // Sets default values
@@ -45,4 +48,32 @@ void ADummyEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void ADummyEnemyCharacter::EnableCameraTransition()
 {
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetViewTargetWithBlend(this, DeathCameraBlendTime);
+}
+
+void ADummyEnemyCharacter::Die()
+{
+	USkeletalMeshComponent* CharSM = GetMesh();
+
+	// Enable ragdoll physics for our dummy enamy (To simulate a dying effect)
+	CharSM->SetSimulatePhysics(true);
+	CharSM->SetAllBodiesSimulatePhysics(true);
+	CharSM->WakeAllRigidBodies();
+	CharSM->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	// Reset the global time to default
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+
+	FTimerHandle TimerHandle;
+	FTimerDelegate TimerDel;
+
+	TimerDel.BindLambda([&]()
+	{
+		// Deactivate the death camera
+		DeathCameraComp->Deactivate();
+
+		AKillShotCamerasCharacter* MainChar = Cast<AKillShotCamerasCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		MainChar->ResetActiveCamera();	
+	});
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDel, CameraResetDelay, false);
 }

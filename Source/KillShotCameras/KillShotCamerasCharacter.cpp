@@ -185,22 +185,30 @@ void AKillShotCamerasCharacter::OnFire()
 
 				// spawn the projectile at the muzzle
 				AKillShotCamerasProjectile* SpawnedProjectile = World->SpawnActor<AKillShotCamerasProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-				// Dilate the time
-				UGameplayStatics::SetGlobalTimeDilation(World, TimeDilationMultiplier);
+				ADummyEnemyCharacter* EnemyToBeKilled = nullptr;
 
-				// Change the activate camera
-				ActivateThirdPersonCamera();
+				// if projectile going to hit enemy - dilate the time and assign the enemy that we're going to kill
 
-				// Create a timer handle and a timer delagate
-				FTimerHandle TimerHandle;
-				FTimerDelegate TimerDel;
+				if (HitsAnEnemy(SpawnedProjectile, EnemyToBeKilled))
+				{
+					SpawnedProjectile->SetEnemyToKill(EnemyToBeKilled);
 
-				// Assign the correspondent UFUNCTION to the timer delegate
-				TimerDel.BindUFunction(this, TEXT("ActivateProjectileCamera"), SpawnedProjectile);
+					// Dilate the time
+					UGameplayStatics::SetGlobalTimeDilation(World, TimeDilationMultiplier);
 
-				// Fire the delegate after the specific delay
-				World->GetTimerManager().SetTimer(TimerHandle, TimerDel, ThirdPersonToProjectileTransitionDelay, false);
+					// Change the activate camera
+					ActivateThirdPersonCamera();
 
+					// Create a timer handle and a timer delagate
+					FTimerHandle TimerHandle;
+					FTimerDelegate TimerDel;
+
+					// Assign the correspondent UFUNCTION to the timer delegate
+					TimerDel.BindUFunction(this, TEXT("ActivateProjectileCamera"), SpawnedProjectile);
+
+					// Fire the delegate after the specific delay
+					World->GetTimerManager().SetTimer(TimerHandle, TimerDel, ThirdPersonToProjectileTransitionDelay, false);
+				}
 				/** KillShotCode end */
 			}
 		}
@@ -352,4 +360,41 @@ void AKillShotCamerasCharacter::ActivateProjectileCamera(AKillShotCamerasProject
 {
 	// Change the active camera based on the assigned blend time from within our editor
 	Cast<APlayerController>(GetController())->SetViewTargetWithBlend(Projectile, ThirdPersonCameraToProjectileCameraBlendTime);
+}
+
+bool AKillShotCamerasCharacter::HitsAnEnemy(AKillShotCamerasProjectile* Projectile, ADummyEnemyCharacter*& HitEnemy)
+{
+	HitEnemy = Cast<ADummyEnemyCharacter>(GetHitActor(Projectile));
+
+	return (HitEnemy) ? true : false;
+}
+
+AActor* AKillShotCamerasCharacter::GetHitActor(AKillShotCamerasProjectile* Projectile)
+{
+	FHitResult HitResult;
+
+	FVector StartLocation = Projectile->GetActorLocation();
+
+	FVector EndLocation = StartLocation + (Projectile->GetActorForwardVector() * RayCastLength);
+
+	FCollisionQueryParams CollisionParams;
+
+	// Ignore the character and the projecxtile
+	CollisionParams.AddIgnoredActor(this);
+	CollisionParams.AddIgnoredActor(Projectile);
+
+	// Perform raycast - search pawns only
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECollisionChannel::ECC_Pawn, CollisionParams);
+
+	return HitResult.GetActor();
+}
+
+void AKillShotCamerasCharacter::ResetActiveCamera()
+{
+	// Activate the first person camera again
+	FirstPersonCameraComponent->Activate();
+	ThirdPersonCameraComp->Deactivate();
+
+	// Transition to the first person camera
+	Cast<APlayerController>(GetController())->SetViewTarget(this);
 }
