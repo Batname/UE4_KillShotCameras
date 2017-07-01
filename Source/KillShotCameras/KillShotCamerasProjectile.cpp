@@ -6,8 +6,12 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SphereComponent.h"
 
-AKillShotCamerasProjectile::AKillShotCamerasProjectile() 
+AKillShotCamerasProjectile::AKillShotCamerasProjectile()
 {
+
+	// Tell Engine to call tick function every frame
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Use a sphere as a simple collision representation
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	CollisionComp->InitSphereRadius(5.0f);
@@ -49,5 +53,20 @@ void AKillShotCamerasProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Oth
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 
 		Destroy();
+	}
+}
+
+void AKillShotCamerasProjectile::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (!bActivatedTransition && 
+		EnemyToKill &&
+		(EnemyToKill->GetActorLocation() - GetActorLocation()).Size() <= DeathCameraTransitionDistance
+	)
+	{
+		// We're near the enemy, enable the camera transition
+		EnemyToKill->EnableCameraTransition();
+		bActivatedTransition = true;
 	}
 }

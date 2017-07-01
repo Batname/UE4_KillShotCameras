@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "DummyEnemyCharacter.h"
 #include "KillShotCamerasProjectile.generated.h"
 
 UCLASS(config=Game)
@@ -48,5 +49,23 @@ protected:
 public:
 	/** Applies the velocity multiplier to the existing velocity of the player */
 	void ApplyVelocityMultiplier();
+
+private:
+	/** The Enimy that this projectile is going to kill */
+	ADummyEnemyCharacter* EnemyToKill = nullptr;
+
+	/** True when the transition from projectile's camera to the enimy's camera has been activated */
+	bool bActivatedTransition = false;
+
+protected:
+	/** The distance threshold that the death camera transition will occur */
+	UPROPERTY(EditAnywhere)
+	float DeathCameraTransitionDistance = 300.f;
+
+public:
+	virtual void Tick(float DeltaSeconds) override;
+
+	/** Sets the enimy that is going to be killed */
+	FORCEINLINE void SetEnemyToKill(ADummyEnemyCharacter* Enamy) { EnemyToKill = Enamy; }
 };
 
