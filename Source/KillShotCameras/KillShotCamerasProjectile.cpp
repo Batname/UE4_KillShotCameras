@@ -2,6 +2,8 @@
 
 #include "KillShotCamerasProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Components/SphereComponent.h"
 
 AKillShotCamerasProjectile::AKillShotCamerasProjectile() 
@@ -23,12 +25,20 @@ AKillShotCamerasProjectile::AKillShotCamerasProjectile()
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
 	ProjectileMovement->UpdatedComponent = CollisionComp;
 	ProjectileMovement->InitialSpeed = 3000.f;
-	ProjectileMovement->MaxSpeed = 3000.f;
+	/** KillShotCode begin */
+	ProjectileMovement->MaxSpeed = 0.f; // inittial 3000.0f
+	ProjectileMovement->bShouldBounce = false; // initial true
+	InitialLifeSpan = 0.f; // Initial 3.0f. We want this projectile to exist until it hits something
+	/** KillShotCode end */
 	ProjectileMovement->bRotationFollowsVelocity = true;
-	ProjectileMovement->bShouldBounce = true;
 
-	// Die after 3 seconds by default
-	InitialLifeSpan = 3.0f;
+	/** KillShotCode begin */
+	ProjectileSpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("ProjectileSpringArmComp"));
+	ProjectileSpringArmComp->SetupAttachment(RootComponent);
+
+	ProjectileCameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("ProjectileCameraComp"));
+	ProjectileCameraComp->SetupAttachment(ProjectileSpringArmComp);
+	/** KillShotCode end */
 }
 
 void AKillShotCamerasProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

@@ -30,5 +30,23 @@ public:
 	FORCEINLINE class USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	FORCEINLINE class UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+
+//------------------- Kill shot cameras code
+// ----------------------------------------
+protected:
+	/** The velocity multiplier that is applied when we slow the world's time */
+	UPROPERTY(EditAnywhere)
+	float VelocityMultiplier = 5.f;
+
+	UPROPERTY(VisibleAnywhere)
+	class UCameraComponent* ProjectileCameraComp;
+
+	UPROPERTY(VisibleAnywhere)
+	class USpringArmComponent* ProjectileSpringArmComp;
+
+public:
+	/** Applies the velocity multiplier to the existing velocity of the player */
+	void ApplyVelocityMultiplier();
 };
 

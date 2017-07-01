@@ -119,6 +119,11 @@ void AKillShotCamerasCharacter::BeginPlay()
 		VR_Gun->SetHiddenInGame(true, true);
 		Mesh1P->SetHiddenInGame(false, true);
 	}
+
+	/** KillShotCode begin */
+	GetController()->bFindCameraComponentWhenViewTarget = true;
+
+	/** KillShotCode end */
 }
 
 //////////////////////////////////////////////////////////////////////////
