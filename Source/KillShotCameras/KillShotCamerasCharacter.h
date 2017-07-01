@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "KillShotCamerasProjectile.h"
 #include "KillShotCamerasCharacter.generated.h"
 
 class UInputComponent;
@@ -155,6 +156,20 @@ protected:
 private:
 	/** De-activate the default camera and activate the third person camera */
 	void ActivateThirdPersonCamera();
+
+private:
+	/** De-activate the third person camera and activate the camera on the given projectile */
+	UFUNCTION()
+	void ActivateProjectileCamera(AKillShotCamerasProjectile* Projectile);
+
+protected:
+	/** The time in seconds that we will transition form the third person camera to the projectile's camera */
+	UPROPERTY(EditAnywhere)
+	float ThirdPersonCameraToProjectileCameraBlendTime = 0.05f;
+
+	/** The delay in seconds that we will activate the projectile's camera */
+	UPROPERTY(EditAnywhere)
+	float ThirdPersonToProjectileTransitionDelay = 0.005f;
 
 };
 

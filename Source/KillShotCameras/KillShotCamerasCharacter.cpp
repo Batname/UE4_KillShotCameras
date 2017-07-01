@@ -338,3 +338,9 @@ void AKillShotCamerasCharacter::ActivateThirdPersonCamera()
 	// Activate Third person camera
 	ThirdPersonCameraComp->Activate();
 }
+
+void AKillShotCamerasCharacter::ActivateProjectileCamera(AKillShotCamerasProjectile* Projectile)
+{
+	// Change the active camera based on the assigned blend time from within our editor
+	Cast<APlayerController>(GetController())->SetViewTargetWithBlend(Projectile, ThirdPersonCameraToProjectileCameraBlendTime);
+}
