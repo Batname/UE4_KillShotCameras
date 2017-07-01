@@ -152,7 +152,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* ThirdPersonCameraComp;
 
-
+private:
+	/** De-activate the default camera and activate the third person camera */
+	void ActivateThirdPersonCamera();
 
 };
 

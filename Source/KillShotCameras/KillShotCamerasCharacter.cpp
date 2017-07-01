@@ -81,7 +81,7 @@ AKillShotCamerasCharacter::AKillShotCamerasCharacter()
 	VR_MuzzleLocation->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));		// Counteract the rotation of the VR gun model.
 
 	// Uncomment the following line to turn motion controllers on by default:
-	//bUsingMotionControllers = true;
+	// bUsingMotionControllers = true;
 
 	/** KillShotCode begin */
 
@@ -165,13 +165,6 @@ void AKillShotCamerasCharacter::OnFire()
 				const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
 				const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
 				World->SpawnActor<AKillShotCamerasProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-			
-				/** KillShotCode begin */
-				// Dilate the time
-				UGameplayStatics::SetGlobalTimeDilation(World, TimeDilationMultiplier);
-
-				/** KillShotCode end */
-
 			}
 			else
 			{
@@ -185,6 +178,16 @@ void AKillShotCamerasCharacter::OnFire()
 
 				// spawn the projectile at the muzzle
 				World->SpawnActor<AKillShotCamerasProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			
+
+				/** KillShotCode begin */
+				// Dilate the time
+				UGameplayStatics::SetGlobalTimeDilation(World, TimeDilationMultiplier);
+
+				// Change the activate camera
+				ActivateThirdPersonCamera();
+
+				/** KillShotCode end */
 			}
 		}
 	}
@@ -318,4 +321,15 @@ bool AKillShotCamerasCharacter::EnableTouchscreenMovement(class UInputComponent*
 		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AKillShotCamerasCharacter::TouchUpdate);
 	}
 	return bResult;
+}
+
+//------------------- Kill shot cameras code
+// ----------------------------------------
+void AKillShotCamerasCharacter::ActivateThirdPersonCamera()
+{
+	// Deactivate the first person camera
+	FirstPersonCameraComponent->Deactivate();
+
+	// Activate Third person camera
+	ThirdPersonCameraComp->Activate();
 }
